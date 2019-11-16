@@ -1,11 +1,18 @@
 package pg.ium.warehouse.controller;
 
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import pg.ium.warehouse.domain.Tyre;
 import pg.ium.warehouse.exception.TyreNotFoundException;
 import pg.ium.warehouse.exception.TyreQuantityLowerThanZeroException;
 import pg.ium.warehouse.repository.TyreRepository;
-import pg.ium.warehouse.domain.Tyre;
 
 import java.util.List;
 
@@ -32,6 +39,8 @@ public class TyreController {
 
 	@PostMapping
 	Tyre add(@RequestBody Tyre newTyre) {
+		newTyre.setId(null);
+		newTyre.setQuantity(0); //New tyres are always added with no quantity.
 		return repository.save(newTyre);
 	}
 
@@ -45,7 +54,7 @@ public class TyreController {
 				.orElseThrow(() -> new TyreNotFoundException(id));
 	}
 
-	@PatchMapping("/{id}/quantity/change/{diff}")
+	@PatchMapping("/{id}/quantity/{change}")
 	Tyre changeQuantity(@PathVariable Long id, @PathVariable Integer change) throws TyreQuantityLowerThanZeroException {
 		Tyre tyre = repository.findById(id)
 				.orElseThrow(() -> new TyreNotFoundException(id));
@@ -57,11 +66,10 @@ public class TyreController {
 
 	@DeleteMapping("/{id}")
 	void remove(@PathVariable Long id) {
-		try {
-			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException ex) {
-			throw new TyreNotFoundException(id);
-		}
+		repository.findById(id)
+				.orElseThrow(() -> new TyreNotFoundException(id));
+
+		repository.deleteById(id);
 	}
 
 }
