@@ -20,31 +20,31 @@ import java.util.Collections;
 public class DataInitializer implements CommandLineRunner {
 
 	@Autowired
-	UserRepository userRepository;
+	UserRepository users;
 
 	@Autowired
-	TyreRepository tyreRepository;
+	TyreRepository tyres;
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
 	@Override
 	public void run(String... args) throws Exception {
-		tyreRepository.save(Tyre.builder()
+		tyres.save(Tyre.builder()
 				.producer("Goodyear")
 				.name("Ultra Grp 9+")
 				.rimSize(16)
 				.price(new BigDecimal(320.00))
 				.quantity(8)
 				.build());
-		tyreRepository.save(Tyre.builder()
+		tyres.save(Tyre.builder()
 				.producer("Bridgestone")
 				.name("Blizzak")
 				.rimSize(17)
 				.price(new BigDecimal(514.30))
 				.quantity(5)
 				.build());
-		tyreRepository.save(Tyre.builder()
+		tyres.save(Tyre.builder()
 				.producer("Michelin")
 				.name("Alpine 4")
 				.rimSize(19)
@@ -52,20 +52,20 @@ public class DataInitializer implements CommandLineRunner {
 				.quantity(3)
 				.build());
 
-		userRepository.save(User.builder()
+		users.save(User.builder()
 				.username("manager")
 				.password(passwordEncoder.encode("password"))
 				.roles(Arrays.asList(UserRoles.MANAGER.getName(), UserRoles.EMPLOYEE.getName()))
 				.build());
 
-		userRepository.save(User.builder()
+		users.save(User.builder()
 				.username("employee")
 				.password(passwordEncoder.encode("password"))
 				.roles(Collections.singletonList(UserRoles.EMPLOYEE.getName()))
 				.build());
 
 		//OAuth user
-		userRepository.save(User.builder()
+		users.save(User.builder()
 				.username("106536279007322987683")
 				//Theoretically it's possible to log in with this password!
 				.password(passwordEncoder.encode("bCD2t4Q54yzXEtLGRcHX"))
