@@ -1,4 +1,4 @@
-package pg.ium.warehouse.security;
+package pg.ium.warehouse.security.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +12,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticationRequest implements Serializable {
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -6986746375915710855L;
 	private String username;
 	private String password;
 }

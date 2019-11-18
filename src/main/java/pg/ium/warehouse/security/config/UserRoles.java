@@ -1,4 +1,4 @@
-package pg.ium.warehouse.security;
+package pg.ium.warehouse.security.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

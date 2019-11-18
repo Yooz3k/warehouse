@@ -3,10 +3,13 @@ package pg.ium.warehouse.exception;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import pg.ium.warehouse.security.InvalidJwtAuthenticationException;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
@@ -21,8 +24,13 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
 		return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
 	}
 
-	@ExceptionHandler(InvalidJwtAuthenticationException.class)
-	public ResponseEntity<Object> invalidJwtAuthentication(InvalidJwtAuthenticationException ex) {
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<Object> invalidJwtAuthentication(BadCredentialsException ex) {
+		return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler({GeneralSecurityException.class, IOException.class})
+	public ResponseEntity<Object> invalidOAuthTokenVerification(Exception ex) {
 		return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.UNAUTHORIZED);
 	}
 

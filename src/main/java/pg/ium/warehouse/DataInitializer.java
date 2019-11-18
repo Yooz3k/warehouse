@@ -9,7 +9,7 @@ import pg.ium.warehouse.domain.Tyre;
 import pg.ium.warehouse.domain.User;
 import pg.ium.warehouse.repository.TyreRepository;
 import pg.ium.warehouse.repository.UserRepository;
-import pg.ium.warehouse.security.UserRoles;
+import pg.ium.warehouse.security.config.UserRoles;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -62,6 +62,14 @@ public class DataInitializer implements CommandLineRunner {
 				.username("employee")
 				.password(passwordEncoder.encode("password"))
 				.roles(Collections.singletonList(UserRoles.EMPLOYEE.getName()))
+				.build());
+
+		//OAuth user
+		userRepository.save(User.builder()
+				.username("106536279007322987683")
+				//Theoretically it's possible to log in with this password!
+				.password(passwordEncoder.encode("bCD2t4Q54yzXEtLGRcHX"))
+				.roles(Arrays.asList(UserRoles.MANAGER.getName(), UserRoles.EMPLOYEE.getName()))
 				.build());
 	}
 }

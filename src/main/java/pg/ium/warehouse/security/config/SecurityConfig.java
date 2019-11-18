@@ -1,4 +1,4 @@
-package pg.ium.warehouse.security;
+package pg.ium.warehouse.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,9 +9,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import pg.ium.warehouse.security.JwtConfigurer;
+import pg.ium.warehouse.security.JwtTokenProvider;
 
-import static pg.ium.warehouse.security.UserRoles.EMPLOYEE;
-import static pg.ium.warehouse.security.UserRoles.MANAGER;
+import static pg.ium.warehouse.security.config.UserRoles.EMPLOYEE;
+import static pg.ium.warehouse.security.config.UserRoles.MANAGER;
 
 @Configuration
 @EnableWebSecurity
@@ -34,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
 				.authorizeRequests()
-				.antMatchers("/auth/login").permitAll()
+				.antMatchers("/auth/**").permitAll()
 				.antMatchers("/me").authenticated()
 				.antMatchers(HttpMethod.DELETE, "/tyres**").hasRole(MANAGER.getName())
 				.antMatchers(HttpMethod.GET, "/tyres**").hasAnyRole(MANAGER.getName(), EMPLOYEE.getName())
