@@ -70,18 +70,8 @@ public class AuthenticationController {
 			if (idToken != null) {
 				GoogleIdToken.Payload payload = idToken.getPayload();
 
-				// Print user identifier
 				String userId = payload.getSubject();
-				log.info("User ID: " + userId);
-
-				// Get profile information from payload
-				String email = payload.getEmail();
-				boolean emailVerified = payload.getEmailVerified();
-				String name = (String) payload.get("name");
-				String pictureUrl = (String) payload.get("picture");
-				String locale = (String) payload.get("locale");
-				String familyName = (String) payload.get("family_name");
-				String givenName = (String) payload.get("given_name");
+				log.info("User ID: " + payload.getSubject());
 
 				String token = jwtTokenProvider.createToken(userId, users.findByUsername(userId)
 						.orElseThrow(() -> new UsernameNotFoundException("User with username (ID) " + userId + " not found"))
