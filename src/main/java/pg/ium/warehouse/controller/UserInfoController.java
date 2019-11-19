@@ -1,6 +1,7 @@
 package pg.ium.warehouse.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,9 +14,10 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.ResponseEntity.ok;
 
-@RestController()
+@RestController
 public class UserInfoController {
 
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	@GetMapping("/me")
 	public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) {
 		Map<Object, Object> model = new HashMap<>();

@@ -1,5 +1,6 @@
 package pg.ium.warehouse.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,17 +27,20 @@ public class TyreController {
 		this.repository = repository;
 	}
 
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	@GetMapping
 	List<Tyre> findAll() {
 		return repository.findAll();
 	}
 
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	@GetMapping("/{id}")
 	Tyre findById(@PathVariable Long id) {
 		return repository.findById(id)
 				.orElseThrow(() -> new TyreNotFoundException(id));
 	}
 
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	@PostMapping
 	Tyre add(@RequestBody Tyre newTyre) {
 		newTyre.setId(null);
@@ -44,6 +48,7 @@ public class TyreController {
 		return repository.save(newTyre);
 	}
 
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	@PutMapping("/{id}")
 	Tyre replace(@RequestBody Tyre newTyre, @PathVariable Long id) {
 		return repository.findById(id)
@@ -54,6 +59,7 @@ public class TyreController {
 				.orElseThrow(() -> new TyreNotFoundException(id));
 	}
 
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	@PatchMapping("/{id}/quantity/{change}")
 	Tyre changeQuantity(@PathVariable Long id, @PathVariable Integer change) throws TyreQuantityLowerThanZeroException {
 		Tyre tyre = repository.findById(id)
@@ -64,6 +70,7 @@ public class TyreController {
 		return tyre;
 	}
 
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@DeleteMapping("/{id}")
 	void remove(@PathVariable Long id) {
 		repository.findById(id)

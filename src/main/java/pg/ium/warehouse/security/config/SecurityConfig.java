@@ -3,8 +3,8 @@ package pg.ium.warehouse.security.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -12,11 +12,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import pg.ium.warehouse.security.JwtConfigurer;
 import pg.ium.warehouse.security.JwtTokenProvider;
 
-import static pg.ium.warehouse.security.config.UserRoles.EMPLOYEE;
-import static pg.ium.warehouse.security.config.UserRoles.MANAGER;
-
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -34,16 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.httpBasic().disable()
 				.csrf().disable()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and()
-				.authorizeRequests()
-				.antMatchers("/auth/**").permitAll()
-				.antMatchers("/me").authenticated()
-				.antMatchers(HttpMethod.DELETE, "/tyres**").hasRole(MANAGER.getName())
-				.antMatchers(HttpMethod.GET, "/tyres**").hasAnyRole(MANAGER.getName(), EMPLOYEE.getName())
-				.antMatchers(HttpMethod.POST, "/tyres**").hasAnyRole(MANAGER.getName(), EMPLOYEE.getName())
-				.antMatchers(HttpMethod.PUT, "/tyres**").hasAnyRole(MANAGER.getName(), EMPLOYEE.getName())
-				.antMatchers(HttpMethod.PATCH, "/tyres**").hasAnyRole(MANAGER.getName(), EMPLOYEE.getName())
-				.anyRequest().authenticated()
 				.and()
 				.apply(new JwtConfigurer(jwtTokenProvider));
 	}
