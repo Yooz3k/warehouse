@@ -15,22 +15,22 @@ import java.security.GeneralSecurityException;
 public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(TyreNotFoundException.class)
-	public ResponseEntity<Object> tyreNotFoundHandler(TyreNotFoundException ex) {
+	public ResponseEntity<String> tyreNotFoundHandler(TyreNotFoundException ex) {
 		return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(TyreQuantityLowerThanZeroException.class)
-	public ResponseEntity<Object> tyreQuantityLowerThanZeroHandler(TyreQuantityLowerThanZeroException ex) {
+	public ResponseEntity<String> tyreQuantityLowerThanZeroHandler(TyreQuantityLowerThanZeroException ex) {
 		return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
 	}
 
 	@ExceptionHandler(BadCredentialsException.class)
-	public ResponseEntity<Object> invalidJwtAuthentication(BadCredentialsException ex) {
+	public ResponseEntity<String> invalidJwtAuthentication(BadCredentialsException ex) {
 		return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.UNAUTHORIZED);
 	}
 
 	@ExceptionHandler({GeneralSecurityException.class, IOException.class})
-	public ResponseEntity<Object> invalidOAuthTokenVerification(Exception ex) {
+	public ResponseEntity<String> invalidOAuthTokenVerification(Exception ex) {
 		return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.UNAUTHORIZED);
 	}
 
