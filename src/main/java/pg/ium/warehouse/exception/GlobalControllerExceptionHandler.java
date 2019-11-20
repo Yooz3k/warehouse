@@ -3,6 +3,7 @@ package pg.ium.warehouse.exception;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -31,6 +32,11 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
 
 	@ExceptionHandler({GeneralSecurityException.class, IOException.class})
 	public ResponseEntity<String> invalidOAuthTokenVerification(Exception ex) {
+		return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<String> accessDenied(AccessDeniedException ex) {
 		return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.UNAUTHORIZED);
 	}
 
