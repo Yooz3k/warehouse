@@ -12,12 +12,17 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pg.ium.warehouse.domain.User;
+import pg.ium.warehouse.exception.UserAlreadyExistsException;
 import pg.ium.warehouse.repository.UserRepository;
 import pg.ium.warehouse.security.JwtTokenProvider;
+import pg.ium.warehouse.security.config.UserRoles;
 import pg.ium.warehouse.security.dao.AuthenticationRequest;
 import pg.ium.warehouse.security.dao.OAuthTokenVerificationRequest;
 
@@ -26,6 +31,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.springframework.http.ResponseEntity.ok;
 import static pg.ium.warehouse.OAuthTokens.WEB_CLIENT_TOKEN;
@@ -41,6 +47,26 @@ public class AuthenticationController {
 	JwtTokenProvider jwtTokenProvider;
 	@Autowired
 	UserRepository users;
+	@Autowired
+	PasswordEncoder passwordEncoder;
+
+	@PutMapping("/register")
+	public ResponseEntity register(@RequestBody AuthenticationRequest request) {
+		String username = request.getUsername();
+		String password = request.getPassword();
+
+		Optional<User> userByUsername = users.findByUsername(username);
+		userByUsername.ifPresent(u -> {
+			throw new UserAlreadyExistsException(u.getUsername());
+		});
+
+		User user = users.save(User.builder()
+				.username(username)
+				.password(passwordEncoder.encode(password))
+				.roles(Collections.singletonList(UserRoles.EMPLOYEE.getName()))
+				.build());
+		return ok(user);
+	}
 
 	@PostMapping("/login")
 	public ResponseEntity login(@RequestBody AuthenticationRequest request) {

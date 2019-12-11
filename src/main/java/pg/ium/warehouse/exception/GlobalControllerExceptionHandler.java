@@ -40,4 +40,9 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
 		return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.UNAUTHORIZED);
 	}
 
+	@ExceptionHandler(UserAlreadyExistsException.class)
+	public ResponseEntity<String> userAlreadyExists(UserAlreadyExistsException ex) {
+		return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT);
+	}
+
 }
