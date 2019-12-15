@@ -1,5 +1,6 @@
 package pg.ium.warehouse.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,14 +12,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+import java.io.Serializable;
 import java.math.BigDecimal;
-
-import static lombok.AccessLevel.PROTECTED;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
-@NoArgsConstructor(access = PROTECTED)
-public class Tyre {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Tyre implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,6 +33,13 @@ public class Tyre {
 	private int quantity;
 	@Column(precision = 10, scale = 2)
 	private BigDecimal price;
+	@Column(name = "last_modified")
+	private LocalDateTime lastModified;
+	private boolean deleted = false;
+	@Transient
+	private int quantityChange = 0;
+	@Transient
+	private boolean toBeAdded;
 
 	@Builder
 	private Tyre(String producer, String name, int rimSize, int quantity, BigDecimal price) {
@@ -38,6 +48,7 @@ public class Tyre {
 		this.rimSize = rimSize;
 		this.quantity = quantity;
 		this.price = price;
+		this.lastModified = LocalDateTime.now();
 	}
 
 	public void replaceFields(@NonNull Tyre other) {
